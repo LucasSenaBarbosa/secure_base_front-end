@@ -1,0 +1,30 @@
+export type InventoryItem = {id:string;name:string;qty:string;category:'Eletrônica'|'Estrutura'|'Mecânica'|'Fixadores';description:string};
+// Transcrito da imagem de packing list fornecida. Itens de fixação agrupados quando a resolução não permite confirmar a medida exata.
+export const inventory: InventoryItem[] = [
+{id:'esp32',name:'Placa de desenvolvimento ESP32',qty:'1',category:'Eletrônica',description:'Controladora principal Wi-Fi/Bluetooth'},
+{id:'wood1',name:'Placa de madeira A',qty:'1 conjunto',category:'Estrutura',description:'Peças cortadas a laser para montagem da casa'},
+{id:'wood2',name:'Placa de madeira B',qty:'1 conjunto',category:'Estrutura',description:'Painéis complementares da casa'},
+{id:'lcd',name:'Display LCD 1602 com módulo I²C',qty:'1',category:'Eletrônica',description:'Exibição de mensagens e informações'},
+{id:'led',name:'Módulo LED RGB 6812',qty:'1',category:'Eletrônica',description:'Iluminação RGB programável'},
+{id:'rfid',name:'Módulo RFID',qty:'1',category:'Eletrônica',description:'Leitura de cartões e tags'},
+{id:'analog',name:'Sensor de gás analógico',qty:'1',category:'Eletrônica',description:'Leitura simulada de gases'},
+{id:'button',name:'Módulo botão',qty:'1',category:'Eletrônica',description:'Acionamento manual'},
+{id:'buzzer',name:'Buzzer passivo',qty:'1',category:'Eletrônica',description:'Sinalização sonora'},
+{id:'vibration',name:'Módulo sensor de vibração',qty:'1',category:'Eletrônica',description:'Detecção de vibração'},
+{id:'steam',name:'Sensor de vapor / água',qty:'1',category:'Eletrônica',description:'Detecção simulada de umidade/água'},
+{id:'pir',name:'Sensor de movimento PIR',qty:'1',category:'Eletrônica',description:'Presença e movimento'},
+{id:'tilt',name:'Sensor de inclinação',qty:'1',category:'Eletrônica',description:'Inclinação e mudança de posição'},
+{id:'servo',name:'Micro servo',qty:'1',category:'Mecânica',description:'Abertura de porta ou trava'},
+{id:'dht',name:'Sensor de temperatura/umidade',qty:'1',category:'Eletrônica',description:'Leitura DHT'},
+{id:'rfidtag',name:'Tag RFID',qty:'1',category:'Eletrônica',description:'Autenticação por aproximação'},
+{id:'usb',name:'Cabo USB',qty:'1',category:'Eletrônica',description:'Programação e alimentação da placa'},
+{id:'cable',name:'Cabo branco',qty:'1',category:'Eletrônica',description:'Interligação dos módulos'},
+{id:'battery',name:'Suporte para pilhas',qty:'1',category:'Eletrônica',description:'Suporte de alimentação (pilhas não inclusas)'},
+{id:'key',name:'Chave / tag azul RFID',qty:'1',category:'Eletrônica',description:'Acesso e identificação'},
+{id:'fan',name:'Ventilador com motor',qty:'1',category:'Mecânica',description:'Ventilação por comando digital'},
+{id:'wire',name:'Conjunto de fios Dupont',qty:'vários',category:'Eletrônica',description:'Conexões entre módulos'},
+{id:'wrench',name:'Chave de montagem',qty:'1',category:'Fixadores',description:'Ferramenta para a montagem'},
+{id:'bolts',name:'Parafusos, porcas e espaçadores de diferentes tamanhos',qty:'conjunto',category:'Fixadores',description:'Peças de fixação identificadas nas últimas linhas da embalagem'},
+{id:'rings',name:'Arruelas e acessórios metálicos',qty:'conjunto',category:'Fixadores',description:'Fixação e acabamento'},
+{id:'plastic',name:'Peças de fixação em nylon',qty:'conjunto',category:'Fixadores',description:'Espaçadores e suportes plásticos'}
+];

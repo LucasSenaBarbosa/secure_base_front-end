@@ -1,0 +1,121 @@
+@property --fx-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+
+.landing { --mx: 50vw; --my: 18vh; min-height: 100vh; background: var(--bg); color: var(--text); isolation: isolate; overflow-x: clip; }
+.landing::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(560px circle at var(--mx) var(--my), color-mix(in srgb, var(--accent) 20%, transparent), transparent 62%); mix-blend-mode: screen; }
+.landing::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.16; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.55'/></svg>"); }
+.landing > * { position: relative; z-index: 1; }
+.landing > .land-fx { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.land-fx canvas { display: block; width: 100% !important; height: 100% !important; }
+
+.land-bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; background: color-mix(in srgb, var(--bg) 62%, transparent); backdrop-filter: blur(18px) saturate(1.4); border-bottom: 1px solid transparent; }
+.land-bar .brand { padding: 0; }
+.land-bar.scrolled { border-bottom-color: color-mix(in srgb, var(--accent) 30%, var(--line)); }
+.land-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent-2), #f0abfc); box-shadow: 0 0 14px var(--accent-2); transform: scaleX(0); transform-origin: left center; }
+
+.land-hero, .land-split { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
+.land-hero { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(300px, 1.05fr); gap: 44px; align-items: center; min-height: calc(100vh - 80px); padding: 40px 0 24px; }
+.land-kicker { margin: 0 0 14px; color: var(--accent-2); font-size: 12px; font-weight: 750; letter-spacing: 0.18em; text-transform: uppercase; text-shadow: 0 0 18px color-mix(in srgb, var(--accent-2) 60%, transparent); }
+.land-hero h1, .land-split h2, .land-end h2, .land-carousel-head h2 { margin: 0; font: 700 clamp(34px, 5vw, 64px) "Space Grotesk"; letter-spacing: -0.05em; line-height: 1.02; }
+.land-hero-copy > p:not(.land-kicker), .land-split p, .land-end p, .land-carousel-head p:not(.land-kicker) { margin: 18px 0 0; max-width: 58ch; color: var(--muted); font-size: 17px; line-height: 1.65; }
+
+.fx-title { background: linear-gradient(100deg, var(--text) 0%, var(--text) 38%, var(--accent-2) 48%, #f0abfc 54%, var(--text) 64%, var(--text) 100%); background-size: 260% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: fx-shine 7s cubic-bezier(.6,0,.4,1) infinite; filter: drop-shadow(0 0 26px color-mix(in srgb, var(--accent) 28%, transparent)); }
+@keyframes fx-shine { 0% { background-position: 100% 0; } 60%, 100% { background-position: 0% 0; } }
+
+.fx-border { position: relative; isolation: isolate; }
+.fx-border::before { content: ""; position: absolute; inset: 0; z-index: 3; padding: 1.5px; border-radius: inherit; pointer-events: none; background: conic-gradient(from var(--fx-angle), transparent 0 62%, var(--accent) 72%, var(--accent-2) 80%, #f0abfc 86%, transparent 94%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: fx-orbit 6s linear infinite; }
+@keyframes fx-orbit { to { --fx-angle: 360deg; } }
+
+.fx-glow { position: relative; overflow: hidden; isolation: isolate; box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-2) 40%, transparent), 0 10px 34px color-mix(in srgb, var(--accent) 55%, transparent); animation: fx-pulse 3.2s ease-in-out infinite; transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.fx-glow::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(110deg, transparent 30%, #ffffff66 50%, transparent 70%); transform: translateX(-120%); animation: fx-sweep 3.6s ease-in-out infinite; }
+.fx-glow:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 0 0 1px var(--accent-2), 0 14px 46px color-mix(in srgb, var(--accent) 75%, transparent); }
+@keyframes fx-pulse { 50% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-2) 70%, transparent), 0 10px 52px color-mix(in srgb, var(--accent) 80%, transparent); } }
+@keyframes fx-sweep { 0%, 55% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+
+.land-frame { margin: 0; aspect-ratio: 1 / 1; max-height: 640px; border-radius: 30px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow), 0 0 80px color-mix(in srgb, var(--accent) 30%, transparent); background: #05070d; }
+.land-frame::after { content: ""; position: absolute; z-index: 1; inset: 0; pointer-events: none; border-radius: inherit; box-shadow: inset 0 0 90px #05070dcc; }
+.land-stage { position: absolute; inset: 0; touch-action: pan-y; }
+.land-stage canvas, .land-carousel-stage canvas { display: block; width: 100% !important; height: 100% !important; }
+.land-badge { position: absolute; z-index: 4; left: 16px; bottom: 16px; display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 7px 12px; border-radius: 999px; background: #05070dd4; border: 1px solid color-mix(in srgb, var(--accent-2) 48%, transparent); color: var(--text); font: 650 11px "Space Grotesk"; letter-spacing: 0.14em; text-transform: uppercase; pointer-events: none; backdrop-filter: blur(8px); }
+.land-badge i { width: 7px; height: 7px; border-radius: 50%; background: #34d399; box-shadow: 0 0 0 0 #34d39988; animation: fx-live 1.8s ease-out infinite; }
+@keyframes fx-live { to { box-shadow: 0 0 0 9px #34d39900; } }
+
+.land-ticker { margin: 26px 0; padding: 14px 0; overflow: hidden; border-block: 1px solid color-mix(in srgb, var(--accent) 22%, transparent); background: color-mix(in srgb, var(--bg) 50%, transparent); backdrop-filter: blur(6px); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); transform: rotate(-1.2deg); }
+.land-ticker.reverse { transform: rotate(1.2deg); }
+.land-ticker-track { display: flex; width: max-content; animation: fx-ticker 38s linear infinite; }
+.land-ticker.reverse .land-ticker-track { animation-direction: reverse; animation-duration: 44s; }
+.land-ticker span { display: flex; }
+.land-ticker em { display: inline-flex; align-items: center; gap: 26px; padding-right: 26px; font: 700 clamp(22px, 3.2vw, 38px) "Space Grotesk"; font-style: normal; letter-spacing: -0.03em; white-space: nowrap; color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--text) 55%, transparent); }
+.land-ticker em:nth-child(3n + 1) { color: var(--text); -webkit-text-stroke: 0; text-shadow: 0 0 22px color-mix(in srgb, var(--accent-2) 55%, transparent); }
+.land-ticker em i { font-style: normal; font-size: 0.55em; color: var(--accent-2); -webkit-text-stroke: 0; text-shadow: 0 0 12px var(--accent-2); }
+@keyframes fx-ticker { to { transform: translateX(-50%); } }
+
+.land-carousel { margin: 40px 0 0; }
+.land-carousel-head { width: min(1120px, calc(100% - 48px)); margin: 0 auto; text-align: center; }
+.land-carousel-head p:not(.land-kicker) { margin-inline: auto; }
+.land-carousel-stage { position: relative; height: clamp(440px, 70vh, 720px); margin-top: 8px; cursor: grab; touch-action: pan-y; user-select: none; mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 86%, transparent 100%); }
+.land-carousel-stage:active { cursor: grabbing; }
+.land-carousel-info { position: absolute; left: 50%; bottom: 9%; z-index: 2; width: min(520px, calc(100% - 120px)); transform: translateX(-50%); text-align: center; pointer-events: none; }
+.land-carousel-info span { color: var(--accent-2); font: 700 12px "Space Grotesk"; letter-spacing: 0.2em; text-shadow: 0 0 14px var(--accent-2); }
+.land-carousel-info b { display: block; margin-top: 8px; font: 700 clamp(28px, 4vw, 48px) "Space Grotesk"; letter-spacing: -0.045em; color: #f5f8ff; text-shadow: 0 0 34px color-mix(in srgb, var(--accent) 70%, transparent), 0 2px 12px #000; animation: fx-swap 0.7s cubic-bezier(.2,.8,.2,1); }
+.land-carousel-info p { margin: 8px auto 0; max-width: 42ch; color: #c3d0e8; font-size: 15px; line-height: 1.5; text-shadow: 0 1px 10px #000; animation: fx-swap 0.9s cubic-bezier(.2,.8,.2,1); }
+@keyframes fx-swap { from { opacity: 0; transform: translateY(14px); filter: blur(10px); letter-spacing: 0.02em; } }
+.land-carousel-arrow { position: absolute; top: 46%; z-index: 2; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--accent-2) 45%, transparent); background: #05070dcc; color: #f5f8ff; font-size: 28px; line-height: 1; backdrop-filter: blur(10px); box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 35%, transparent); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.land-carousel-arrow:hover { transform: scale(1.08); box-shadow: 0 0 34px color-mix(in srgb, var(--accent-2) 60%, transparent); }
+.land-carousel-arrow.prev { left: max(16px, calc(50% - 560px)); }
+.land-carousel-arrow.next { right: max(16px, calc(50% - 560px)); }
+.land-part-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; width: min(1120px, calc(100% - 48px)); margin: 6px auto 0; }
+.land-part-row button { border: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 70%, transparent); color: var(--muted); border-radius: 999px; padding: 8px 14px; font-weight: 650; font-size: 13px; backdrop-filter: blur(8px); transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease; }
+.land-part-row button:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.land-part-row button.on { color: var(--text); border-color: var(--accent-2); background: color-mix(in srgb, var(--accent) 22%, var(--panel)); box-shadow: 0 0 22px color-mix(in srgb, var(--accent-2) 40%, transparent); }
+
+.land-split { padding: 96px 0 8px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 46px; align-items: center; }
+.land-split.flip .land-photo { order: -1; }
+.land-photo { margin: 0; aspect-ratio: 16 / 10; border-radius: 26px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow), 0 0 60px color-mix(in srgb, var(--accent) 18%, transparent); background: #070b14; }
+.land-photo img { display: block; width: 100%; height: 124%; object-fit: cover; transform: translateY(var(--shift, 0px)) scale(1.08); }
+.reveal.land-photo { clip-path: inset(12% 8% 12% 8% round 26px); }
+.reveal.land-photo.in { clip-path: inset(0 round 26px); }
+
+.land-steps { width: min(1120px, calc(100% - 48px)); margin: 44px auto 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; perspective: 900px; }
+.land-step { position: relative; overflow: hidden; padding: 12px 12px 20px; border-radius: 24px; background: color-mix(in srgb, var(--panel) 82%, transparent); border: 1px solid var(--line); box-shadow: var(--shadow); backdrop-filter: blur(10px); }
+.land-step.in { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: opacity 0.8s ease, transform 0.35s ease, border-color 0.4s ease, filter 0.8s ease; }
+.land-step::after { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; opacity: 0; transition: opacity 0.4s ease; background: radial-gradient(320px circle at var(--px, 50%) var(--py, 50%), color-mix(in srgb, var(--accent-2) 26%, transparent), transparent 60%); }
+.land-step:hover { border-color: color-mix(in srgb, var(--accent-2) 50%, var(--line)); }
+.land-step:hover::after { opacity: 1; }
+.land-step figure { margin: 0 0 14px; aspect-ratio: 16 / 10; border-radius: 16px; overflow: hidden; background: #070b14; }
+.land-step img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+.land-step:hover img { transform: scale(1.08); }
+.land-step span { color: var(--accent-2); font: 700 12px "Space Grotesk"; letter-spacing: 0.16em; }
+.land-step h3 { margin: 8px 4px 0; font-size: 20px; letter-spacing: -0.03em; }
+.land-step p { margin: 8px 4px 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+.land-end { width: min(760px, calc(100% - 48px)); margin: 0 auto; padding: 110px 0 120px; text-align: center; }
+.land-end p { margin-inline: auto; }
+.land-next { margin-top: 26px; padding: 14px 26px; font-size: 15px; border-radius: 14px; }
+
+.reveal { opacity: 0; transform: translateY(30px); filter: blur(10px); transition: opacity 0.9s ease, transform 0.9s cubic-bezier(.2,.7,.2,1), filter 0.9s ease, clip-path 1.1s cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; filter: none; }
+
+@media (max-width: 800px) {
+  .land-hero, .land-split { grid-template-columns: 1fr; width: min(100% - 32px, 720px); gap: 24px; }
+  .land-hero { min-height: 0; padding-top: 28px; }
+  .land-frame { width: 100%; aspect-ratio: 1 / 1; max-height: none; }
+  .land-split { padding-top: 60px; }
+  .land-split.flip .land-photo { order: 0; }
+  .land-steps { grid-template-columns: 1fr; width: min(100% - 32px, 720px); }
+  .land-bar { padding: 14px 16px; }
+  .land-end { width: min(100% - 32px, 720px); }
+  .land-carousel-stage { height: 460px; }
+  .land-carousel-info { width: calc(100% - 32px); bottom: 6%; }
+  .land-carousel-arrow { top: auto; bottom: 34%; width: 44px; height: 44px; }
+  .land-part-row { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; width: 100%; padding: 4px 16px 8px; }
+  .land-part-row button { flex: none; }
+}
+@media (max-width: 640px) {
+  .land-next { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fx-title, .fx-border::before, .fx-glow, .fx-glow::after, .land-ticker-track, .land-badge i, .land-carousel-info b, .land-carousel-info p { animation: none; }
+  .reveal { opacity: 1; transform: none; filter: none; }
+  .reveal.land-photo { clip-path: none; }
+  .landing::before, .landing::after { display: none; }
+}
