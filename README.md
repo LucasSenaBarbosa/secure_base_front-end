@@ -1,29 +1,50 @@
-# SecureBase — simulador Keyestudio KS5009
+# SecureBase Frontend
 
-Simulador no navegador de uma casa inteligente ESP32. O firmware em tempo
-simulado controla motores, sensores, LCD, LEDs, alertas e as lições do kit
-KS5009.
+Simulador web de uma casa inteligente com ESP32 e kit Keyestudio KS5009. A
+interface modela sensores, motores, LCD, LEDs, alertas, ligações e lições em
+tempo simulado. A autenticação e os dados de conta são tratados pela API
+Python do SecureBase; o navegador não acessa o Supabase diretamente.
 
-## Executar o frontend
+## Tecnologias e estrutura
 
-1. Execute:
+- React, TypeScript e Vite.
+- Three.js e React Three Fiber para a cena 3D.
+- Zustand para estado do simulador; ECharts para gráficos.
+- `src/sim/`: firmware, hardware, sensores e estado simulado.
+- `src/ui/`: telas, componentes e experiência do usuário.
+- `src/three/`: cena 3D e modelos.
+- `src/auth/`: integração HTTP com a API e estado de autenticação.
+- `public/`: imagens, modelos e outros recursos estáticos.
 
-   ```bash
-   npm install
-   npm run dev
-   ```
+## Configuração e execução
 
-Abra `http://localhost:5173`. O cadastro e o login usam a API Python, que
-armazena as contas no PostgreSQL e emite os tokens de sessão. O cadastro não
-confirma o e-mail nem depende de SMTP. O frontend não usa Supabase Auth nem
-precisa de chaves do Supabase. Contas antigas do Supabase Auth não são
-migradas; seus usuários devem se cadastrar novamente. O papel global
-`master` deve ser atribuído manualmente conforme o manual do backend.
+Requer Node.js 20 ou superior. A partir da raiz do repositório:
 
-## O que está simulado
+```sh
+npm ci
+```
 
-- Firmware de casa inteligente e lições no estilo do tutorial KS5009.
-- Sensores de temperatura, umidade, gás, chuva e presença, além de inércia do
-  motor.
-- App Wi-Fi, monitor serial, GPIO, gravação simulada de sketch e reset da placa.
-- Cena React Three Fiber, efeitos visuais e áudio do buzzer ativado pelo usuário.
+Opcionalmente, copie `.env.example` para `.env.local` e ajuste
+`VITE_API_BASE_URL` se a API não estiver em `http://localhost:8000`. Valores
+`VITE_*` são públicos e são incluídos no bundle; nunca coloque chaves Supabase,
+segredos JWT ou credenciais nessas variáveis.
+
+```sh
+npm run dev
+```
+
+Abra `http://localhost:5173`. O simulador funciona no navegador; os fluxos de
+cadastro e login dependem da API SecureBase em execução.
+
+## Build e verificações
+
+```sh
+npm run build
+npm run preview
+```
+
+O build gera o modelo da protoboard, verifica os tipos com `tsc -b` e compila
+para produção com Vite. Não há runner ou script de testes automatizados
+configurado neste repositório. O workflow
+[`frontend-ci.yml`](./.github/workflows/frontend-ci.yml) executa `npm ci` e
+`npm run build` em pushes e pull requests; não realiza deploy.
