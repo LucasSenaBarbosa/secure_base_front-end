@@ -24,10 +24,12 @@ Requer Node.js 20 ou superior. A partir da raiz do repositório:
 npm ci
 ```
 
-Opcionalmente, copie `.env.example` para `.env.local` e ajuste
-`VITE_API_BASE_URL` se a API não estiver em `http://localhost:8000`. Valores
-`VITE_*` são incluídos no bundle do frontend; nunca coloque chaves Supabase,
-segredos JWT ou credenciais nessas variáveis.
+Copie `.env.example` para `.env.local` e configure `VITE_API_BASE_URL` com a URL
+da API. O exemplo aponta para `http://localhost:8000` para desenvolvimento
+local. Em produção, configure a URL pública da API no ambiente de build do
+provedor; o build falha se a variável estiver ausente ou apontar para localhost.
+Valores `VITE_*` são incluídos no bundle do frontend; nunca coloque chaves
+Supabase, segredos JWT ou credenciais nessas variáveis.
 
 ```sh
 npm run dev

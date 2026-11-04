@@ -41,7 +41,11 @@ export class ApiError extends Error {
   }
 }
 
-const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+if (!configuredApiBaseUrl) {
+  throw new Error('VITE_API_BASE_URL precisa estar definida antes de iniciar o frontend.');
+}
+const apiBaseUrl = configuredApiBaseUrl.replace(/\/$/, '');
 let refreshRequest: Promise<string> | null = null;
 
 function getCsrfToken(): string | null {
