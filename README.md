@@ -4,7 +4,7 @@ Simulador web de uma casa inteligente com ESP32 e kit Keyestudio KS5009. A
 interface modela sensores, motores, LCD, LEDs, alertas, ligações e lições em
 tempo simulado. A autenticação e os dados de conta são tratados pela API
 Python do SecureBase; o navegador não acessa o Supabase diretamente.
-
+ 
 ## Tecnologias e estrutura
 
 - React, TypeScript e Vite.
