@@ -25,9 +25,9 @@ npm ci
 ```
 
 Opcionalmente, copie `.env.example` para `.env.local` e ajuste
-`API_BASE_URL` se a API não estiver em `http://localhost:8000`. Essa variável é
-incluída no bundle do frontend; nunca coloque chaves Supabase, segredos JWT ou
-credenciais nela.
+`VITE_API_BASE_URL` se a API não estiver em `http://localhost:8000`. Valores
+`VITE_*` são incluídos no bundle do frontend; nunca coloque chaves Supabase,
+segredos JWT ou credenciais nessas variáveis.
 
 ```sh
 npm run dev
