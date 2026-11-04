@@ -26,7 +26,7 @@ npm ci
 
 Opcionalmente, copie `.env.example` para `.env.local` e ajuste
 `VITE_API_BASE_URL` se a API não estiver em `http://localhost:8000`. Valores
-`VITE_*` são públicos e são incluídos no bundle; nunca coloque chaves Supabase,
+`VITE_*` são incluídos no bundle do frontend; nunca coloque chaves Supabase,
 segredos JWT ou credenciais nessas variáveis.
 
 ```sh
