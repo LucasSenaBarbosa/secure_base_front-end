@@ -1,5 +1,5 @@
 /**
- * Gera public/models/protoboard.glb na hora do build.
+ * Gera public/models/protoboard.glb para desenvolvimento e build.
  * O binário não entra no Git; a protoboard continua igual porque
  * os nomes Wire_<id> e Mod_<id> são o contrato de src/three/Breadboard.tsx.
  */
