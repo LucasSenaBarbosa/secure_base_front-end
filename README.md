@@ -7,7 +7,7 @@ Python do SecureBase; o navegador não acessa o Supabase diretamente.
  
 ## Tecnologias e estrutura
 
-- React, TypeScript e Vite.
+- React, TypeScript e Vite. 
 - Three.js e React Three Fiber para a cena 3D.
 - Zustand para estado do simulador; ECharts para gráficos.
 - `src/sim/`: firmware, hardware, sensores e estado simulado.
