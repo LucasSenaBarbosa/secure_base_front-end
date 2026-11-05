@@ -11,7 +11,7 @@ Python do SecureBase; o navegador não acessa o Supabase diretamente.
 - Three.js e React Three Fiber para a cena 3D.
 - Zustand para estado do simulador; ECharts para gráficos.
 - `src/sim/`: domínio e estado do simulador, firmware, hardware, sensores,
-  eventos e ligações.
+  eventos e ligações. 
 - `src/ui/`: telas e componentes de interface; `src/ui/session.ts` coordena o
   estado da sessão exibido pela interface.
 - `src/three/`: cena 3D, componentes de renderização e integração dos modelos.
