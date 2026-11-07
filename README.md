@@ -91,6 +91,7 @@ translúcidas) para planejar sensores com o algoritmo NSGA-II executado pela API
 O modelo matemático, os endpoints e as limitações estão em
 `secure_base_back-end/docs/optimization.md`.
 
+
 ## Build e verificações
 
 ```powershell
