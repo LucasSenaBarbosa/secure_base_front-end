@@ -30,5 +30,24 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: { port: 5173 },
+    build: {
+      // three.js + R3F (~1 MB) é baixado só nas páginas 3D; o limite cobre esse arquivo de biblioteca.
+      chunkSizeWarningLimit: 1300,
+      rollupOptions: {
+        output: {
+          // Bibliotecas em arquivos próprios: mudam pouco, então o navegador as reaproveita do cache entre deploys.
+          manualChunks(id: string) {
+            // Utilitários internos usados pela entrada: sem isto o Rollup os coloca no arquivo do three
+            // e a primeira tela passa a baixar o three.js inteiro.
+            if (id.includes('vite/preload-helper') || id.includes('commonjsHelpers')) return 'react';
+            if (!id.includes('node_modules')) return undefined;
+            if (/[\\/]node_modules[\\/](three|three-stdlib|@react-three|postprocessing|maath|troika-|meshline|camera-controls|@monogrid)/.test(id)) return 'three';
+            if (/[\\/]node_modules[\\/](echarts|echarts-liquidfill|zrender)[\\/]/.test(id)) return 'echarts';
+            if (/[\\/]node_modules[\\/](react|react-dom|scheduler|zustand)[\\/]/.test(id)) return 'react';
+            return undefined;
+          },
+        },
+      },
+    },
   };
 });

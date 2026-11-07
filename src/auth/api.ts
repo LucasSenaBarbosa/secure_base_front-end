@@ -1,3 +1,16 @@
+import type {
+  Comparison,
+  Evaluation,
+  HomeLayout,
+  LayoutDocument,
+  ManualConfiguration,
+  OptimizationRunRequest,
+  RunDetail,
+  RunSummary,
+  SensorPlacement,
+  SolutionDetail,
+} from '../optimization/types';
+
 export type UserRole = 'master' | 'primary' | 'member';
 
 export const ACCESS_TOKEN_KEY = 'securebase-access-token';
@@ -130,6 +143,10 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   return await response.json() as T;
 }
 
+function homePath(homeId: string, path: string): string {
+  return `/api/v1/homes/${encodeURIComponent(homeId)}${path}`;
+}
+
 async function login(email: string, password: string): Promise<LoginResponse> {
   const response = await fetch(`${apiBaseUrl}/api/v1/auth/login`, {
     method: 'POST',
@@ -229,6 +246,53 @@ export const secureBaseApi = {
   transferHomePrimary: (homeId: string, userId: string) => request<HomeProfile>(
     `/api/v1/homes/${encodeURIComponent(homeId)}/primary`,
     { method: 'PATCH', body: JSON.stringify({ user_id: userId }) },
+  ),
+  getLayout: (homeId: string) => request<LayoutDocument>(homePath(homeId, '/layout')),
+  saveLayout: (homeId: string, version: number, layout: HomeLayout) => request<LayoutDocument>(
+    homePath(homeId, '/layout'),
+    { method: 'PUT', body: JSON.stringify({ version, layout }) },
+  ),
+  evaluateConfiguration: (homeId: string, sensors: SensorPlacement[]) => request<Evaluation>(
+    homePath(homeId, '/configurations/evaluate'),
+    { method: 'POST', body: JSON.stringify({ sensors }) },
+  ),
+  runOptimization: (homeId: string, params: OptimizationRunRequest) => request<RunDetail>(
+    homePath(homeId, '/optimization-runs'),
+    {
+      method: 'POST',
+      headers: { 'Idempotency-Key': idempotencyKey() },
+      body: JSON.stringify(params),
+    },
+  ),
+  listOptimizationRuns: (homeId: string) => request<RunSummary[]>(
+    homePath(homeId, '/optimization-runs?limit=20'),
+  ),
+  getOptimizationRun: (homeId: string, runId: string) => request<RunDetail>(
+    homePath(homeId, `/optimization-runs/${encodeURIComponent(runId)}`),
+  ),
+  getSolution: (homeId: string, runId: string, solutionId: string) => request<SolutionDetail>(
+    homePath(
+      homeId,
+      `/optimization-runs/${encodeURIComponent(runId)}/solutions/${encodeURIComponent(solutionId)}`,
+    ),
+  ),
+  compareWithRun: (homeId: string, runId: string, sensors: SensorPlacement[]) => request<Comparison>(
+    homePath(homeId, `/optimization-runs/${encodeURIComponent(runId)}/compare`),
+    { method: 'POST', body: JSON.stringify({ sensors }) },
+  ),
+  listManualConfigurations: (homeId: string) => request<ManualConfiguration[]>(
+    homePath(homeId, '/manual-configurations'),
+  ),
+  saveManualConfiguration: (homeId: string, name: string, sensors: SensorPlacement[]) => (
+    request<ManualConfiguration>(homePath(homeId, '/manual-configurations'), {
+      method: 'POST',
+      headers: { 'Idempotency-Key': idempotencyKey() },
+      body: JSON.stringify({ name, sensors }),
+    })
+  ),
+  deleteManualConfiguration: (homeId: string, configurationId: string) => request<void>(
+    homePath(homeId, `/manual-configurations/${encodeURIComponent(configurationId)}`),
+    { method: 'DELETE' },
   ),
   listUsers: () => request<UserProfile[]>('/api/v1/users'),
   deleteUser: (id: string) => request<void>(`/api/v1/users/${encodeURIComponent(id)}`, {

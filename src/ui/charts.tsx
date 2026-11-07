@@ -1,10 +1,9 @@
-import * as echarts from 'echarts';
-import 'echarts-liquidfill';
 import { useEffect, useRef } from 'react';
+import { echarts, type ECharts, type EChartsOption, type LineSeriesOption, type YAXisComponentOption } from './echarts';
 
 function useResizableChart() {
   const ref = useRef<HTMLDivElement>(null);
-  const chart = useRef<echarts.ECharts | null>(null);
+  const chart = useRef<ECharts | null>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -69,7 +68,7 @@ export function RadialGauge({ value, color }: { value: number; color: string }) 
     const inst = chart.current;
     if (!inst) return;
     const v = Math.round(clamp01(value / 100) * 100);
-    const option: echarts.EChartsOption = {
+    const option: EChartsOption = {
       series: [
         {
           type: 'gauge',
@@ -130,7 +129,7 @@ export function TrendChart({
     const categories = Array.from({ length: n }, (_, i) => `${-Math.round((n - 1 - i) * 0.5)}s`);
     const pad = (arr: number[]) => (arr.length >= n ? arr : [...Array(n - arr.length).fill(arr[0] ?? 0), ...arr]);
 
-    const yAxis: echarts.YAXisComponentOption[] = dual
+    const yAxis: YAXisComponentOption[] = dual
       ? series.slice(0, 2).map((s, i) => ({
           type: 'value',
           position: i === 0 ? 'left' : 'right',
@@ -147,7 +146,7 @@ export function TrendChart({
           },
         ];
 
-    const lineSeries: echarts.LineSeriesOption[] = series.map((s, i) => ({
+    const lineSeries: LineSeriesOption[] = series.map((s, i) => ({
       type: 'line',
       name: s.name,
       data: pad(s.data),
@@ -173,7 +172,7 @@ export function TrendChart({
           : undefined,
     }));
 
-    const option: echarts.EChartsOption = {
+    const option: EChartsOption = {
       grid: { left: 38, right: dual ? 38 : 14, top: series.length > 1 ? 26 : 14, bottom: 22 },
       tooltip: {
         trigger: 'axis',
@@ -187,7 +186,7 @@ export function TrendChart({
         data: categories,
         boundaryGap: false,
         axisLine: { lineStyle: { color: '#243044' } },
-        axisLabel: { color: '#647890', fontSize: 10, interval: Math.max(0, Math.ceil(n / 6) - 1) },
+        axisLabel: { color: '#647890', fontSize: 10, interval: Math.max(0, Math.ceil(n / 6) - 1), hideOverlap: true },
         axisTick: { show: false },
       },
       yAxis,

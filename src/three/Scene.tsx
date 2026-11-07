@@ -60,7 +60,7 @@ function CameraRig() {
   );
 }
 
-function Lights() {
+export function Lights() {
   const amb = useRef<THREE.AmbientLight>(null!);
   const hemi = useRef<THREE.HemisphereLight>(null!);
   const sun = useRef<THREE.DirectionalLight>(null!);

@@ -1,20 +1,31 @@
-import { Activity, Box, CircuitBoard, CloudRain, Cpu, House, Layers, LogOut, RotateCcw, Users, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Activity, Box, CircuitBoard, CloudRain, Cpu, House, Layers, LogOut, Radar, RotateCcw, Users, X } from 'lucide-react';
+import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react';
 import { firmwareById } from '../sim/firmware';
 import { onRainEvent, type RainEvent } from '../sim/notifications';
 import { useSim, type Page } from '../sim/store';
-import { Landing } from './Landing';
-import { Lab } from './Lab';
 import { Logo } from './Logo';
 import { LoginScreen } from './Login';
-import { ProtoboardPage } from './Protoboard';
 import { ThemeLauncher } from './ThemeDrawer';
-import { FirmwarePage, InventoryPage, TelemetryPage } from './pages';
 import { useSession } from './session';
-import { UsersPage } from './Users';
+
+/** Cada página vira um arquivo JS próprio, baixado só quando é aberta (three.js e ECharts inclusos). */
+function page<M>(load: () => Promise<M>, pick: (m: M) => ComponentType) {
+  return lazy(() => load().then((m) => ({ default: pick(m) })));
+}
+const Landing = page(() => import('./Landing'), (m) => m.Landing);
+const Lab = page(() => import('./Lab'), (m) => m.Lab);
+const OptimizationPage = page(() => import('./Optimization'), (m) => m.OptimizationPage);
+const ProtoboardPage = page(() => import('./Protoboard'), (m) => m.ProtoboardPage);
+const FirmwarePage = page(() => import('./pages'), (m) => m.FirmwarePage);
+const InventoryPage = page(() => import('./pages'), (m) => m.InventoryPage);
+const TelemetryPage = page(() => import('./pages'), (m) => m.TelemetryPage);
+const UsersPage = page(() => import('./Users'), (m) => m.UsersPage);
+
+const PageLoading = () => <div className="page-loading" role="status">Carregando…</div>;
 
 const NAV: { id: Page; label: string; icon: typeof House }[] = [
   { id: 'lab', label: 'Laboratório', icon: Box },
+  { id: 'optimization', label: 'Otimização', icon: Radar },
   { id: 'protoboard', label: 'Protoboard', icon: CircuitBoard },
   { id: 'firmware', label: 'Firmware', icon: Cpu },
   { id: 'inventory', label: 'Inventário', icon: Layers },
@@ -83,7 +94,7 @@ export function App() {
 
   if (loading) return <div className="login-screen"><p>Conectando à SecureBase…</p></div>;
   if (!user) return <LoginScreen />;
-  if (!entered) return <Landing />;
+  if (!entered) return <Suspense fallback={<div className="login-screen"><p>Carregando…</p></div>}><Landing /></Suspense>;
 
   return (
     <div className="app">
@@ -116,7 +127,9 @@ export function App() {
             <button className="icon-btn" onClick={signOut} aria-label="Sair"><LogOut size={15} /></button>
           </div>
         </header>
-        {activePage === 'lab' ? <Lab /> : activePage === 'protoboard' ? <ProtoboardPage /> : activePage === 'firmware' ? <FirmwarePage /> : activePage === 'inventory' ? <InventoryPage /> : activePage === 'users' ? <UsersPage /> : <TelemetryPage />}
+        <Suspense fallback={<PageLoading />}>
+          {activePage === 'lab' ? <Lab /> : activePage === 'optimization' ? <OptimizationPage /> : activePage === 'protoboard' ? <ProtoboardPage /> : activePage === 'firmware' ? <FirmwarePage /> : activePage === 'inventory' ? <InventoryPage /> : activePage === 'users' ? <UsersPage /> : <TelemetryPage />}
+        </Suspense>
       </div>
       <nav className="mobile-tabs">
         {visibleNav.map((item) => (

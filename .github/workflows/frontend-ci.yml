@@ -24,6 +24,16 @@ jobs:
           node-version: "20"
           cache: npm
       - run: npm ci
+      - run: npm test
       - run: npm run build
         env:
           VITE_API_BASE_URL: https://api.example.invalid
+      # Falha se a primeira tela voltar a baixar three.js/ECharts ou passar de 300 KB de JS.
+      - name: Bundle budget
+        run: npm run check:bundle
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist
+          retention-days: 7

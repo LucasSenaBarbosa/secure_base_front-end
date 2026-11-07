@@ -10,7 +10,7 @@ import type {
 
 export type CameraPreset = 'home' | 'front' | 'back' | 'top' | 'side';
 
-export type Page = 'lab' | 'protoboard' | 'firmware' | 'inventory' | 'telemetry' | 'users';
+export type Page = 'lab' | 'optimization' | 'protoboard' | 'firmware' | 'inventory' | 'telemetry' | 'users';
 
 export type HouseModel = 'v1' | 'v2';
 

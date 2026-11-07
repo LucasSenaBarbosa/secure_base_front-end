@@ -17,6 +17,9 @@ Python do SecureBase; o navegador não acessa o Supabase diretamente.
 - `src/three/`: cena 3D, componentes de renderização e integração dos modelos.
 - `src/auth/`: cliente HTTP da API, tipos de autenticação e utilitários de tema
   e armazenamento local.
+- `src/optimization/`: tipos, estado (Zustand) e regras puras do laboratório
+  de otimização de sensores; a página fica em `src/ui/Optimization.tsx` e a
+  cena em `src/three/OptimizationScene.tsx`.
 - `src/main.tsx`: ponto de entrada React; carrega tema e estilos globais e monta
   a aplicação.
 - `public/`: imagens, modelos e outros recursos estáticos.
@@ -61,15 +64,65 @@ Abra `http://localhost:5173`. A simulação roda no navegador; para entrar na
 aplicação e acessar suas telas, o cadastro, o login e a validação da sessão
 dependem da API SecureBase em execução.
 
+## Laboratório de otimização
+
+A página **Otimização** reutiliza a maquete 3D (`HouseV2`, com paredes
+translúcidas) para planejar sensores com o algoritmo NSGA-II executado pela API:
+
+1. Escolha a residência. Sem layout salvo, a API devolve o layout-base da
+   maquete, com orçamento e custos vazios.
+2. Na aba **Casa**, revise ambientes, pontos críticos e pontos candidatos; na
+   aba **Sensores**, informe orçamento, custos, estoque e alcance. Salve o
+   layout (primary ou master da residência).
+3. Na cena, use **Posicionar**, **Mover** e **Remover** sobre os candidatos (◆)
+   para montar a configuração manual. As métricas são calculadas pela API.
+4. Em **Executar**, rode o NSGA-II. Em **Pareto**, compare as alternativas
+   calculadas com a configuração manual e escolha um critério para ordená-las.
+   O selo na cena indica sempre se a configuração exibida é manual ou
+   calculada.
+5. **Aplicar melhor opção** (aba **Pareto**) carrega como configuração manual a
+   primeira solução pelo critério e pelos filtros escolhidos. O critério padrão,
+   **Equilibrada**, fica com a solução de menor custo entre as que atingem o
+   limiar de cobertura do layout; se nenhuma atinge, fica com a de maior
+   cobertura. A configuração aplicada pode ser editada e só fica guardada
+   depois de salva com um nome na aba **Sensores**. Se a execução usou outra
+   versão do layout, o botão recusa e pede uma nova otimização.
+
+O modelo matemático, os endpoints e as limitações estão em
+`secure_base_back-end/docs/optimization.md`.
+
 ## Build e verificações
 
 ```powershell
+npm test
 npm run build
 npm run preview
 ```
 
-O build gera o modelo da protoboard, verifica os tipos com `tsc -b` e compila
-para produção com Vite. Não há runner ou script de testes automatizados
-configurado neste repositório. O workflow
-[`frontend-ci.yml`](./.github/workflows/frontend-ci.yml) executa `npm ci` e
-`npm run build` em pushes e pull requests; não realiza deploy.
+`npm test` executa os testes unitários com Vitest (regras de dominância,
+ordenação, escolha da melhor opção, filtros e edição da configuração manual). O
+build gera o modelo da protoboard, verifica os tipos com `tsc -b` e compila
+para produção com Vite. O workflow
+[`frontend-ci.yml`](./.github/workflows/frontend-ci.yml) executa `npm ci`,
+`npm test` e `npm run build` em pushes e pull requests, confere o tamanho do
+pacote inicial (`scripts/check_bundle.mjs`) e guarda o `dist/` como artefato;
+não realiza deploy.
+
+## Desempenho do carregamento
+
+- **Páginas sob demanda:** `src/ui/App.tsx` carrega cada página com
+  `React.lazy`. Login e o menu vêm no pacote inicial; o resto (Landing, 3D,
+  gráficos) só é baixado quando a página é aberta.
+- **Bibliotecas separadas:** `vite.config.ts` coloca three.js/React Three
+  Fiber, ECharts e React em arquivos próprios, reaproveitados do cache do
+  navegador entre deploys.
+- **ECharts modular:** `src/ui/echarts.ts` registra só os gráficos e
+  componentes usados. Ao usar um tipo de série ou componente novo, registre-o
+  lá, senão o gráfico não aparece.
+- **Orçamento do pacote inicial:** `npm run check:bundle` (após o build) falha
+  se o JS carregado na primeira tela passar de 300 KB. Ao subir o limite, anote
+  o motivo no script.
+
+Referência (novembro de 2026): o pacote inicial caiu de 2.634 KB (806 KB
+gzip), quando tudo vinha num único arquivo, para cerca de 211 KB (71 KB gzip).
+Os modelos `.glb` em `public/models/` (≈7 MB) continuam sem compressão.

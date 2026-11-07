@@ -44,7 +44,8 @@ function publishRig(model: V2House, setRig: (rig: Rig | null) => void) {
   });
 }
 
-export function HouseV2({ mode }: { mode: 'lab' | 'show' }) {
+/** `xray` força paredes translúcidas fora do Lab (ex.: página de otimização). */
+export function HouseV2({ mode, xray: forcedXray }: { mode: 'lab' | 'show'; xray?: boolean }) {
   const { scene } = useGLTF(HOUSE_V2_URL);
   const model = useMemo(() => buildHouseV2(scene), [scene]);
   const explode = useRef({ v: 0 });
@@ -56,7 +57,8 @@ export function HouseV2({ mode }: { mode: 'lab' | 'show' }) {
   const sum = useMemo(() => new THREE.Color(), []);
   const reduce = useRef(false);
   const setRig = useRig((s) => s.setRig);
-  const xray = useSim((s) => (mode === 'lab' ? s.ui.xray : false));
+  const storeXray = useSim((s) => (mode === 'lab' ? s.ui.xray : false));
+  const xray = forcedXray ?? storeXray;
   const exploded = useSim((s) => (mode === 'lab' ? s.ui.exploded : false));
 
   useEffect(() => {
