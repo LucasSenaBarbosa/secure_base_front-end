@@ -100,7 +100,6 @@ npm run build
 npm run preview
 ```
 
-
 `npm test` executa os testes unitários com Vitest (regras de dominância,
 ordenação, escolha da melhor opção, filtros e edição da configuração manual). O
 build gera o modelo da protoboard, verifica os tipos com `tsc -b` e compila
