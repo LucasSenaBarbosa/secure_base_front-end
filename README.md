@@ -92,6 +92,21 @@ O modelo matemático, os endpoints e as limitações estão em
 `secure_base_back-end/docs/optimization.md`.
 
 
+## Laboratório de rede
+
+A página **Rede** mostra o que acontece com as mensagens da casa quando a
+comunicação falha ou é atacada. Na rede saudável, no jamming e na queda da
+fibra, acompanha um alerta de invasão do ESP32 até o celular do morador. Na
+antena falsa, mostra o código de acesso da porta enviado por SMS e o resultado
+em cada antena, com a antena falsa em 2G, 3G, 4G ou 5G. A API calcula e guarda o resultado; a página anima o passo a
+passo e compara com o mesmo cenário sem defesas. **Aplicar na casa** faz alguém
+passar pelo sensor ou, se o código foi lido, abre a porta, e os comandos do
+Laboratório sofrem a perda e o atraso calculados até clicar em **Encerrar na
+casa**.
+
+Nenhum sinal ou tráfego real é gerado, e os valores são didáticos. A decisão
+está em `secure_base_back-end/docs/adr/0010-laboratorio-de-rede-na-api.md`.
+
 ## Build e verificações
 
 ```powershell

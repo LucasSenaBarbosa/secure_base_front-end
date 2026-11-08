@@ -1,4 +1,4 @@
-import { Activity, Box, CircuitBoard, CloudRain, Cpu, House, Layers, LogOut, Radar, RotateCcw, Users, X } from 'lucide-react';
+import { Activity, Box, CircuitBoard, CloudRain, Cpu, House, Layers, LogOut, Network, Radar, RotateCcw, Users, X } from 'lucide-react';
 import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react';
 import { firmwareById } from '../sim/firmware';
 import { onRainEvent, type RainEvent } from '../sim/notifications';
@@ -15,6 +15,7 @@ function page<M>(load: () => Promise<M>, pick: (m: M) => ComponentType) {
 const Landing = page(() => import('./Landing'), (m) => m.Landing);
 const Lab = page(() => import('./Lab'), (m) => m.Lab);
 const OptimizationPage = page(() => import('./Optimization'), (m) => m.OptimizationPage);
+const NetworkPage = page(() => import('./Network'), (m) => m.NetworkPage);
 const ProtoboardPage = page(() => import('./Protoboard'), (m) => m.ProtoboardPage);
 const FirmwarePage = page(() => import('./pages'), (m) => m.FirmwarePage);
 const InventoryPage = page(() => import('./pages'), (m) => m.InventoryPage);
@@ -26,6 +27,7 @@ const PageLoading = () => <div className="page-loading" role="status">Carregando
 const NAV: { id: Page; label: string; icon: typeof House }[] = [
   { id: 'lab', label: 'Laboratório', icon: Box },
   { id: 'optimization', label: 'Otimização', icon: Radar },
+  { id: 'network', label: 'Rede', icon: Network },
   { id: 'protoboard', label: 'Protoboard', icon: CircuitBoard },
   { id: 'firmware', label: 'Firmware', icon: Cpu },
   { id: 'inventory', label: 'Inventário', icon: Layers },
@@ -73,6 +75,7 @@ export function App() {
   const board = useSim((s) => s.board);
   const firmwareId = useSim((s) => s.firmwareId);
   const fw = firmwareById(firmwareId);
+  const link = useSim((s) => s.link);
 
   useEffect(() => {
     return initialize();
@@ -114,6 +117,7 @@ export function App() {
         <div className="side-status">
           <div><i className={board === 'running' ? 'ok' : 'busy'} /> Placa <b>{board === 'running' ? 'rodando' : board === 'flashing' ? 'gravando' : 'boot'}</b></div>
           <div><i className="ok" /> Sketch <b>{fw.index}</b></div>
+          {link && <div><i className="busy" /> Enlace <b>alterado</b></div>}
           <button onClick={() => useSim.getState().reset()}><RotateCcw size={13} /> Reset EN</button>
         </div>
       </aside>
@@ -128,7 +132,7 @@ export function App() {
           </div>
         </header>
         <Suspense fallback={<PageLoading />}>
-          {activePage === 'lab' ? <Lab /> : activePage === 'optimization' ? <OptimizationPage /> : activePage === 'protoboard' ? <ProtoboardPage /> : activePage === 'firmware' ? <FirmwarePage /> : activePage === 'inventory' ? <InventoryPage /> : activePage === 'users' ? <UsersPage /> : <TelemetryPage />}
+          {activePage === 'lab' ? <Lab /> : activePage === 'optimization' ? <OptimizationPage /> : activePage === 'network' ? <NetworkPage /> : activePage === 'protoboard' ? <ProtoboardPage /> : activePage === 'firmware' ? <FirmwarePage /> : activePage === 'inventory' ? <InventoryPage /> : activePage === 'users' ? <UsersPage /> : <TelemetryPage />}
         </Suspense>
       </div>
       <nav className="mobile-tabs">

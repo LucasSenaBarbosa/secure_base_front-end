@@ -10,6 +10,12 @@ import type {
   SensorPlacement,
   SolutionDetail,
 } from '../optimization/types';
+import type {
+  LinkCatalog,
+  LinkSimulationDetail,
+  LinkSimulationRequest,
+  LinkSimulationSummary,
+} from '../network/types';
 
 export type UserRole = 'master' | 'primary' | 'member';
 
@@ -293,6 +299,21 @@ export const secureBaseApi = {
   deleteManualConfiguration: (homeId: string, configurationId: string) => request<void>(
     homePath(homeId, `/manual-configurations/${encodeURIComponent(configurationId)}`),
     { method: 'DELETE' },
+  ),
+  getLinkCatalog: (homeId: string) => request<LinkCatalog>(homePath(homeId, '/link-simulations/catalog')),
+  runLinkSimulation: (homeId: string, params: LinkSimulationRequest) => request<LinkSimulationDetail>(
+    homePath(homeId, '/link-simulations'),
+    {
+      method: 'POST',
+      headers: { 'Idempotency-Key': idempotencyKey() },
+      body: JSON.stringify(params),
+    },
+  ),
+  listLinkSimulations: (homeId: string) => request<LinkSimulationSummary[]>(
+    homePath(homeId, '/link-simulations?limit=20'),
+  ),
+  getLinkSimulation: (homeId: string, simulationId: string) => request<LinkSimulationDetail>(
+    homePath(homeId, `/link-simulations/${encodeURIComponent(simulationId)}`),
   ),
   listUsers: () => request<UserProfile[]>('/api/v1/users'),
   deleteUser: (id: string) => request<void>(`/api/v1/users/${encodeURIComponent(id)}`, {

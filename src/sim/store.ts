@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { firmwareById, pad16 } from './firmware';
 import { CARDS, MAX_RPM } from './hardware';
+import { linkFate, type LinkCondition } from './link';
 import { emitRainEvent, sendRainNotification } from './notifications';
 import { pirSees } from './world';
 import type {
@@ -10,7 +11,7 @@ import type {
 
 export type CameraPreset = 'home' | 'front' | 'back' | 'top' | 'side';
 
-export type Page = 'lab' | 'optimization' | 'protoboard' | 'firmware' | 'inventory' | 'telemetry' | 'users';
+export type Page = 'lab' | 'optimization' | 'network' | 'protoboard' | 'firmware' | 'inventory' | 'telemetry' | 'users';
 
 export type HouseModel = 'v1' | 'v2';
 
@@ -40,7 +41,9 @@ interface SimState {
   history: Sample[];
   tap: TapEvent | null;
   ui: UiState;
+  link: LinkCondition | null;
 
+  setLink(link: LinkCondition | null): void;
   setEnv(p: Partial<Env>): void;
   setSettings(p: Partial<Settings>): void;
   setGasThreshold(v: number): void;
@@ -330,7 +333,12 @@ export const useSim = create<SimState>()((set, get) => {
     history: [],
     tap: null,
     ui: { page: 'lab', selected: null, hovered: null, xray: false, exploded: false, sensorViz: false, autoRotate: false, model: 'v1', focus: { target: 'home', nonce: 0 } },
+    link: null,
 
+    setLink: (link) => {
+      set({ link });
+      log(link ? `[Rede] Enlace sob "${link.label}": perda ${Math.round(link.loss * 100)}%, atraso ${Math.round(link.delayMs)} ms` : '[Rede] Enlace normalizado', 'sys');
+    },
     setEnv: (p) => {
       const prevRain = get().env.rain;
       set((s) => ({ env: { ...s.env, ...p } }));
@@ -373,7 +381,19 @@ export const useSim = create<SimState>()((set, get) => {
         log('[WiFi] ESP32 indisponível (gravando/reiniciando)', 'warn');
         return;
       }
-      cmdQueue.push(cmd);
+      const link = get().link;
+      if (!link) {
+        cmdQueue.push(cmd);
+        return;
+      }
+      const fate = linkFate(link, Math.random());
+      if (fate.dropped) {
+        log(`[Rede] Comando "${cmd.type}" perdido no enlace`, 'warn');
+        return;
+      }
+      setTimeout(() => {
+        if (get().board === 'running') cmdQueue.push(cmd);
+      }, fate.delayMs);
     },
     flash: (id) => {
       fw = firmwareById(id);
